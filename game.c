@@ -143,15 +143,15 @@ static void game_tickJugando(game_t *g)
         lfsr_next(&g->rng);   // sigue mezclando la semilla
     }
 
-    // 3) Colisiones bala-enemigo (Python: groupcollide)
+    // 3) Colisiones bala-enemigo (figura 3x3: bounding box de +2)
     for(k = 0; k < MAX_BALAS; k++)
     {
         if(!g->balas[k].activa) continue;
         for(i = 0; i < MAX_ENEMIGOS; i++)
         {
             if(!g->enemigos[i].activo) continue;
-            if(g->balas[k].x >= g->enemigos[i].x && g->balas[k].x <= g->enemigos[i].x + 1 &&
-               g->balas[k].y >= g->enemigos[i].y && g->balas[k].y <= g->enemigos[i].y + 1)
+            if(g->balas[k].x >= g->enemigos[i].x && g->balas[k].x <= g->enemigos[i].x + 2 &&
+               g->balas[k].y >= g->enemigos[i].y && g->balas[k].y <= g->enemigos[i].y + 2)
             {
                 g->balas[k].activa = 0;
                 g->enemigos[i].activo = 0;
@@ -162,13 +162,13 @@ static void game_tickJugando(game_t *g)
         }
     }
 
-    // 4) Enemigo llega abajo o toca la nave -> -1 vida
+    // 4) Enemigo llega abajo o toca la nave -> -1 vida (figura 3x3: +2)
     for(i = 0; i < MAX_ENEMIGOS; i++)
     {
         if(!g->enemigos[i].activo) continue;
-        uint8_t abajo = (g->enemigos[i].y + 1 >= CAMPO_ALTO - 1);
-        uint8_t tocaNave = (g->enemigos[i].y + 1 >= CAMPO_ALTO - 2) &&
-                           (g->enemigos[i].x + 1 >= g->nave.x - 1) &&
+        uint8_t abajo = (g->enemigos[i].y + 2 >= CAMPO_ALTO - 1);
+        uint8_t tocaNave = (g->enemigos[i].y + 2 >= CAMPO_ALTO - 2) &&
+                           (g->enemigos[i].x + 2 >= g->nave.x - 1) &&
                            (g->enemigos[i].x     <= g->nave.x + 1);
         if(abajo || tocaNave)
         {
