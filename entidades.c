@@ -81,7 +81,15 @@ void balas_draw(bala_t *pool, imagen16x32_t *img)
 }
 
 // ------------------- ENEMIGOS -------------------
-// Cuadrado 2x2 con esquina superior-izquierda en (x, y)
+// Figura 3x3 aleatoria con esquina superior-izquierda en (x, y)
+
+// filas de arriba a abajo; bits = columnas (bit0=izq, bit1=centro, bit2=der)
+static const uint8_t formas3x3[4][3] = {
+    {0x07,0x07,0x07},  // 0 CUADRO   ### / ### / ###
+    {0x02,0x05,0x02},  // 1 CIRCULO  .#. / #.# / .#.
+    {0x02,0x07,0x02},  // 2 CRUZ (+) .#. / ### / .#.
+    {0x05,0x02,0x05},  // 3 EQUIS(X) #.# / .#. / #.#
+};
 
 void enemigos_init(enemigo_t *pool)
 {
@@ -96,8 +104,9 @@ void enemigos_spawn(enemigo_t *pool, lfsr_t *rng)
     {
         if(!pool[i].activo)
         {
-            pool[i].x = (int8_t)lfsr_rango(rng, CAMPO_ANCHO - 1); // 0..14 (cabe el 2x2)
-            pool[i].y = 0;                                         // arriba
+            pool[i].x = (int8_t)lfsr_rango(rng, CAMPO_ANCHO - 2); // 0..13 (cabe el 3x3)
+            pool[i].y = 0;                                        // arriba
+            pool[i].forma = (uint8_t)lfsr_rango(rng, 4);          // 0..3 aleatorio
             pool[i].activo = 1;
             return;
         }
@@ -113,15 +122,13 @@ void enemigos_update(enemigo_t *pool)
 
 void enemigos_draw(enemigo_t *pool, imagen16x32_t *img)
 {
-    uint8_t i;
+    uint8_t i, f, c;
     for(i = 0; i < MAX_ENEMIGOS; i++)
     {
-        if(pool[i].activo)
-        {
-            img_setPixel(img, pool[i].x,     pool[i].y);
-            img_setPixel(img, pool[i].x + 1, pool[i].y);
-            img_setPixel(img, pool[i].x,     pool[i].y + 1);
-            img_setPixel(img, pool[i].x + 1, pool[i].y + 1);
-        }
+        if(!pool[i].activo) continue;
+        for(f = 0; f < 3; f++)
+            for(c = 0; c < 3; c++)
+                if(formas3x3[pool[i].forma][f] & (1 << c))
+                    img_setPixel(img, pool[i].x + c, pool[i].y + f);
     }
 }
