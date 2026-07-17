@@ -24,10 +24,11 @@
         uint8_t activa;
     }bala_t;
 
-    typedef struct{           // Python: class Meteor (cuadrado 2x2)
+    typedef struct{           // Python: class Meteor (figura 3x3 aleatoria)
         int8_t x;             // esquina izquierda
         int8_t y;             // esquina superior
         uint8_t activo;
+        uint8_t forma;        // 0=cuadro 1=circulo 2=cruz 3=x
     }enemigo_t;
 
     // --- Player ---
