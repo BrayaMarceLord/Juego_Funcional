@@ -5,7 +5,7 @@
 #include "2_HAL/lcd_i2c.h"
 #include "5_Game/game.h"
 #include "5_Game/buzzer.h"
-#include "1_Drivers/Driver_UART.h"
+
 
 // ---- Capa del profesor ----
 display16x32_t myDisplay = {
