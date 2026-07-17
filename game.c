@@ -3,7 +3,6 @@
 #include "buzzer.h"
 #include "sfx.h"
 
-
 extern volatile uint16_t ADCLight;
 extern uint8_t sensor_luzAIntensidad(uint16_t adc);
 
@@ -123,6 +122,7 @@ static void game_tickJugando(game_t *g)
     const nivelCfg_t *cfg = &tabla[g->dificultad][g->nivel];
     uint8_t i, k;
 
+  
    // 1) Entradas: MPU (inclinacion) + botones
     static uint8_t divMpu = 0;
     if(++divMpu >= 3)                     // lee el sensor a 10 Hz (I2C compartido con LCD)
@@ -144,7 +144,6 @@ static void game_tickJugando(game_t *g)
         buzzer_play(sfx_disparo, sfx_disparo_d, BUZZER_LEN(sfx_disparo), 120, false);
     }
     if(botones_flancoPausa(g->botones)){ g->estado = ST_PAUSA; buzzer_music_stop(); return; }
-
 
     // 2) Fisica (con divisores de frecuencia sobre el tick)
     if(++g->divBalas >= 2){ g->divBalas = 0; balas_update(g->balas); }         // 15 px/s
