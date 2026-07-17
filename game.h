@@ -7,6 +7,7 @@
     #include "1_Drivers/LEDS.h"
     #include "1_Drivers/Driver_UART.h"
     #include "2_HAL/lcd_i2c.h"
+    #include "2_HAL/MPU6050.h"
 
     #define TICK_HZ       30
     #define NIVEL_TICKS   (2u * 60u * TICK_HZ)   // 2 minutos por nivel
@@ -51,6 +52,7 @@
         LEDS_t *leds;
         Driver_Uart_t *uart;
         lcd_t *lcd;
+        mpu6050_t *mpu;
     }game_t;
 
     extern void game_init(game_t *g);
