@@ -1,3 +1,6 @@
+#ifndef DRIVER_UART_H
+#define DRIVER_UART_H
+
 #include <ti/devices/msp/msp.h>
 #include <ti/driverlib/driverlib.h>
 #include <ti/driverlib/m0p/dl_core.h>
@@ -56,3 +59,5 @@ typedef struct{
 
 extern void Driver_Uart_init(Driver_Uart_t *ptr);
 extern void Driver_Uart_sendMessageUart(Driver_Uart_t *ptr, const char *str);
+
+#endif
