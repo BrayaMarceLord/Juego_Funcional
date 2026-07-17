@@ -44,6 +44,19 @@ lcd_t myLcd = {
     },
 };
 
+// ---- MPU6050 por I2C (mismo bus que la LCD, dir 0x68) ----
+mpu6050_t myMpu = {
+    .addr   = MPU6050ADDR,      // AD0 = GND
+    .gyroFS  = GYRO_FS_250,
+    .accelFS = ACCEL_FS_2G,
+    .myI2C = {
+        .I2C = I2C0,
+        .CLK = {.DIV = DIV_BY_1_I2C, .SOURCE = BUSCLK_SEL_I2C, .TPR = 31},
+        .SDA = {.pin = PA28, .port = PORTA, .PIMCM_PF = 3},
+        .SCL = {.pin = PA31, .port = PORTA, .PIMCM_PF = 3},
+    },
+};
+
 // ---- Capa del juego ----
 botones_t myBotones = {
     .disparo = {.pin = PB6, .port = PORTB},
@@ -59,6 +72,7 @@ game_t myGame = {
     .leds    = &myLeds,
     .uart    = &myUart,
     .lcd     = &myLcd,
+    .mpu     = &myMpu,
 };
 
 volatile uint16_t ADCLight = 0;
@@ -84,6 +98,9 @@ int main(void)
     botones_init(&myBotones);
     display16x32_init(&myDisplay);
     lcd_init(&myLcd);          // LCD 16x2 (I2C0, BUSCLK)
+    lcd_init(&myLcd);
+    mpu6050_init(&myMpu);      // mismo I2C0; re-init inofensivo (misma config)
+    Driver_Uart_init(&myUart);
     Driver_Uart_init(&myUart);
     game_init(&myGame);
 
