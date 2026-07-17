@@ -122,8 +122,7 @@ static void game_tickJugando(game_t *g)
     const nivelCfg_t *cfg = &tabla[g->dificultad][g->nivel];
     uint8_t i, k;
 
-  
-   // 1) Entradas: MPU (inclinacion) + botones
+    // 1) Entradas: MPU (inclinacion) + botones
     static uint8_t divMpu = 0;
     if(++divMpu >= 3)                     // lee el sensor a 10 Hz (I2C compartido con LCD)
     {
@@ -265,6 +264,8 @@ static void game_tickMenu(game_t *g)
 
 void game_tick(game_t *g)
 {
+    static gameState_t estadoPrevSerial = ST_INICIO;
+
     switch(g->estado)
     {
         case ST_INICIO:
@@ -363,5 +364,15 @@ void game_tick(game_t *g)
         DL_ADC12_enableConversions(ADC12_0_INST);
         DL_ADC12_startConversion(ADC12_0_INST);
     }
+
+    if(g->estado != estadoPrevSerial)
+    {
+        estadoPrevSerial = g->estado;
+        if(g->estado == ST_JUGANDO)
+            Driver_Uart_sendMessageUart(g->uart, "JUGANDO\r\n");
+        else if(g->estado == ST_PAUSA)
+            Driver_Uart_sendMessageUart(g->uart, "PAUSA\r\n");
+    }
+
     display16x32_sendFrame(g->display);
 }
